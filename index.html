@@ -70,7 +70,6 @@
         .confetti { position: absolute; width: 10px; height: 10px; top: -20px; opacity: 0.9; animation: fall linear forwards; }
         @keyframes fall { to { transform: translateY(calc(var(--phone-height) + 20px)) rotate(720deg); opacity: 0; } }
 
-        /* ESTILO DOS CORAÇÕES */
         .heart {
             position: absolute;
             width: 20px;
@@ -208,7 +207,7 @@
 
                 phoneScreen.classList.add('subtitles-active');
                 decorativeGifs.forEach(gif => gif.style.display = 'block');
-                allIntervals.push(setInterval(createHeart, 300)); // Inicia os corações
+                allIntervals.push(setInterval(createHeart, 300)); 
                 
                 subtitlesData.forEach(item => setTimeout(() => setAnimatedSubtitle(item.text), item.time));
                 setTimeout(startGrandFinale, finalSubtitle.time);
@@ -222,7 +221,7 @@
                 subtitles.style.display = 'none';
                 phoneScreen.classList.remove('subtitles-active');
                 decorativeGifs.forEach(gif => gif.style.display = 'none');
-                document.querySelectorAll('.heart').forEach(h => h.remove()); // Remove corações restantes
+                document.querySelectorAll('.heart').forEach(h => h.remove()); 
                 showExplosionAndParty();
             }, 2000);
         }
