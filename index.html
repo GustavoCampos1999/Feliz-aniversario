@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Aniversário Fran!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Roboto:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --phone-width: 414px;
+            --phone-height: 896px;
+        }
+        body {
+            display: grid; place-items: center; height: 100vh; margin: 0;
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background: linear-gradient(45deg, #4c004c, #1a001a);
+            overflow: hidden;
+        }
+        .phone-screen {
+            position: relative; width: 100%; height: 100%;
+            max-width: var(--phone-width); max-height: var(--phone-height);
+            background-color: #f4f4f9; overflow: hidden; display: grid;
+            place-items: center; border-radius: 40px;
+            box-shadow: 0 0 30px rgba(255,255,255,0.1);
+            border: 10px solid #111; transition: background-color 0.8s ease;
+        }
+        .phone-screen.subtitles-active {
+            background-color: #fff0f5;
+            background-image: radial-gradient(circle at center, #ffe0f0 0%, #fff0f5 70%);
+        }
+        .container { text-align: center; padding: 20px; display: block; width: 100%;}
+        h1 { font-size: 28px; color: #333; }
+        #subtitles {
+            font-family: 'Pacifico', cursive; font-size: 44px; font-weight: normal;
+            color: #8a2be2; text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            min-height: 150px; padding: 0 20px; display: none;
+            text-align: center; z-index: 10;
+        }
+        .subtitle-animated { animation: text-pop-in 0.7s cubic-bezier(0.250, 0.460, 0.450, 0.940) both; }
+        @keyframes text-pop-in { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .buttons { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 20px; width: 100%;}
+        .btn {
+            width: 80%; max-width: 280px; padding: 15px 20px; font-size: 18px; font-weight: 500;
+            cursor: pointer; border: 2px solid #555; border-radius: 8px;
+            background-color: #fff; transition: all 0.3s ease;
+        }
+        .btn:hover { background-color: #f0f0f0; transform: scale(1.03); }
+        .no-button-wrapper { position: relative; width: 80%; max-width: 280px; height: 53px; }
+        .btn-no { position: absolute; width: 100%; top: 0; left: 0; z-index: 100; }
+        
+        #explosion-gif { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; z-index: 250; }
+        .final-gif { display: none; position: absolute; width: 100px; transition: all 0.5s ease-in-out; z-index: 5; }
+        .final-gif.spotlight { transform: scale(1.5); z-index: 20; }
+        .decorative-gif {
+            display: none; position: absolute; width: 80px; opacity: 0;
+            pointer-events: none;
+            animation: float-across 12s linear infinite; z-index: 9;
+        }
+        @keyframes float-across {
+            0% { transform: translateX(-100px) rotate(-10deg); opacity: 0.8; }
+            50% { opacity: 0.9; transform: translateX(calc(var(--phone-width) / 2)) rotate(10deg); }
+            100% { transform: translateX(calc(var(--phone-width) + 100px)) rotate(5deg); opacity: 0; }
+        }
+        .replay-btn { display: none; flex-direction: column; align-items: center; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: none; border: none; cursor: pointer; z-index: 300; }
+        .replay-btn span:first-child { font-size: 80px; }
+        .replay-btn span:last-child { font-size: 20px; color: #aaa; margin-top: 5px; font-weight: 500; }
+        .creditos { display: none; position: absolute; bottom: 25px; left: 0; right: 0; text-align: center; font-size: 14px; color: #888; z-index: 300; }
+        .confetti { position: absolute; width: 10px; height: 10px; top: -20px; opacity: 0.9; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(calc(var(--phone-height) + 20px)) rotate(720deg); opacity: 0; } }
+
+        /* ESTILO DOS CORAÇÕES */
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff1a75;
+            bottom: -30px;
+            opacity: 0;
+            animation: float-up linear forwards;
+            z-index: 8;
+        }
+        .heart::before, .heart::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff1a75;
+            border-radius: 50%;
+        }
+        .heart::before { top: -10px; left: 0; }
+        .heart::after { left: -10px; top: 0; }
+
+        @keyframes float-up {
+            0% { transform: translateY(0) rotate(45deg) scale(0.5); opacity: 0.8; }
+            100% { transform: translateY(calc(-1 * var(--phone-height) - 50px)) rotate(45deg) scale(1.2); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="phone-screen" id="phoneScreen">
+        <div class="container">
+            <h1 class="title">Bom dia, Fran!</h1>
+            <h1 class="title">Ligue o som, por favor... Ligou?</h1>
+            <div class="buttons">
+                <button class="btn btn-yes">Claro!</button>
+                <div class="no-button-wrapper">
+                    <button class="btn btn-no" id="no">Nem</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="subtitles"></div>
+        <img id="explosion-gif" src="https://media.tenor.com/dBW9Tt-FZTIAAAAi/877-james.gif" alt="Explosão de Parabéns">
+        <button id="replayButton" class="replay-btn"><span>🔁</span><span>De novo!</span></button>
+        <footer class="creditos">Made by: Gustavo Campos</footer>
+
+        <img src="https://media.tenor.com/wghbF-0neSoAAAAi/pajarito.gif" class="decorative-gif" style="top: 20%; animation-delay: 6s;">
+        <img src="https://media.tenor.com/9-uKLf_ehmAAAAAi/being-cute-summer-salt.gif" class="decorative-gif" style="top: 10%; animation-delay: 3s; width: 60px;">
+        <img src="https://media.tenor.com/1-z8Zmq7OEEAAAAj/daisy-flower-jesus-revolution.gif" class="decorative-gif" style="top: 85%; animation-delay: 9s; width: 90px;">
+        <img src="https://media.tenor.com/pQeFCujD-MIAAAAi/flowers.gif" class="decorative-gif" style="top: 75%; animation-delay: 5s; width: 120px;">
+        
+        <img src="https://media1.tenor.com/m/GFcASnjw9TcAAAAd/dancing-cat-dance.gif" class="final-gif">
+        <img src="https://media.tenor.com/QYgJH_gyodgAAAAM/homer-simpson.gif" class="final-gif">
+        <img src="https://media.tenor.com/M2xKS1Ez6HIAAAAj/emoji-rotating.gif" class="final-gif">
+        <img src="https://i.pinimg.com/originals/10/22/dd/1022dda8c81c2db8e25f9f8ba4a58f2d.gif" class="final-gif">
+        <img src="https://media.tenor.com/A_cSY7tNqY8AAAAj/b-day-bday.gif" class="final-gif">
+        <img src="https://media.tenor.com/rLOjyzhrq2cAAAAj/parrot-dancing-parrot.gif" class="final-gif">
+        <img src="https://media.tenor.com/r2vlv-xbCfsAAAAj/geburtstag-happy-birthday.gif" class="final-gif">
+        <img src="https://media.tenor.com/oyFfNb4Wj_cAAAAj/spongebob-dance-spongebob-joget.gif" class="final-gif">
+        <img src="https://media.tenor.com/_AZJmhAry0gAAAAj/rat-dancing-meme.gif" class="final-gif">
+        <img src="https://media.tenor.com/kQA86PqyXZQAAAAj/small-dancing-white-cat-dance-funny.gif" class="final-gif">
+        <img src="https://media1.tenor.com/m/0BE3mYzHl6AAAAAd/dance-happy-dance.gif" class="final-gif">
+        <img src="https://media1.tenor.com/m/GM_8ETMrSmAAAAAd/dance-old-man-dancing.gif" class="final-gif">
+        <img src="https://media1.tenor.com/m/-IGv_i2BXpAAAAAd/gefeliciteerd.gif" class="final-gif">
+        <img src="https://media.tenor.com/3UvnQWmVmUYAAAAj/doge.gif" class="final-gif">
+    </div>
+
+    <script>
+        const phoneScreen = document.getElementById('phoneScreen');
+        const noButton = document.getElementById('no');
+        const noButtonWrapper = noButton.parentElement;
+        const yesButtons = document.querySelectorAll('.btn-yes');
+        const initialContainer = document.querySelector('.container');
+        const subtitles = document.getElementById('subtitles');
+        const explosionGif = document.getElementById('explosion-gif');
+        const finalGifs = document.querySelectorAll('.final-gif');
+        const decorativeGifs = document.querySelectorAll('.decorative-gif');
+        const replayButton = document.getElementById('replayButton');
+        const credits = document.querySelector('.creditos');
+        
+        let allIntervals = [];
+        let audio;
+        let noButtonHasMoved = false;
+
+        const subtitlesData = [
+            { text: "Um bom dia pra você...", time: 3000 },
+            { text: "Astronautas precisam ir para o espaço para ver o mundo...", time: 4500 },
+            { text: "Já eu, consigo ver o meu, só de olhar, pra você.", time: 10000 }
+        ];
+        const finalSubtitle = { text: "Feliz Aniversário! ❤️", time: 15000 };
+
+        function clearAllIntervals() {
+            allIntervals.forEach(clearInterval);
+            allIntervals = [];
+        }
+
+        function setAnimatedSubtitle(text) {
+            subtitles.classList.remove('subtitle-animated');
+            void subtitles.offsetWidth;
+            subtitles.innerText = text;
+            subtitles.classList.add('subtitle-animated');
+        }
+
+        function resetNoButton() {
+            if (noButtonHasMoved) {
+                noButtonWrapper.appendChild(noButton);
+            }
+            noButton.style.position = 'absolute';
+            noButton.style.top = '0';
+            noButton.style.left = '0';
+            noButtonWrapper.style.height = '53px';
+            noButtonWrapper.style.display = 'block';
+            noButtonHasMoved = false;
+        }
+
+        function startTheShow() {
+            clearAllIntervals();
+            replayButton.style.display = 'none';
+            credits.style.display = 'none';
+            document.querySelectorAll('.confetti, .heart').forEach(e => e.remove());
+            decorativeGifs.forEach(gif => gif.style.display = 'none');
+            phoneScreen.classList.remove('subtitles-active');
+            initialContainer.style.display = 'none';
+            subtitles.style.display = 'block';
+            setAnimatedSubtitle('');
+            
+            resetNoButton();
+            
+            if (audio) { audio.pause(); audio.currentTime = 0; }
+            
+            try {
+                audio = new Audio('aniversario.mp3');
+                audio.play();
+                audio.onended = showReplayScreen;
+
+                phoneScreen.classList.add('subtitles-active');
+                decorativeGifs.forEach(gif => gif.style.display = 'block');
+                allIntervals.push(setInterval(createHeart, 300)); // Inicia os corações
+                
+                subtitlesData.forEach(item => setTimeout(() => setAnimatedSubtitle(item.text), item.time));
+                setTimeout(startGrandFinale, finalSubtitle.time);
+
+            } catch (e) { console.error("Erro ao tocar o áudio.", e); setAnimatedSubtitle("Ops! Erro no áudio!"); }
+        }
+        
+        function startGrandFinale() {
+            setAnimatedSubtitle(finalSubtitle.text);
+            setTimeout(() => {
+                subtitles.style.display = 'none';
+                phoneScreen.classList.remove('subtitles-active');
+                decorativeGifs.forEach(gif => gif.style.display = 'none');
+                document.querySelectorAll('.heart').forEach(h => h.remove()); // Remove corações restantes
+                showExplosionAndParty();
+            }, 2000);
+        }
+        
+        function showExplosionAndParty() {
+            explosionGif.style.display = 'block';
+            setTimeout(() => {
+                explosionGif.style.display = 'none';
+                startFinalParty();
+            }, 1000);
+        }
+
+        function startFinalParty() {
+            const colors = ['#FF69B4', '#FFD700', '#ADFF2F', '#1E90FF', '#BA55D3'];
+            clearAllIntervals();
+
+            allIntervals.push(setInterval(() => {
+                phoneScreen.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            }, 800));
+
+            finalGifs.forEach(gif => gif.style.display = 'block');
+            
+            moveGifs();
+            allIntervals.push(setInterval(moveGifs, 2000));
+            allIntervals.push(setInterval(createConfetti, 150));
+            allIntervals.push(setInterval(spotlightRandomGif, 2000));
+            allIntervals.push(setInterval(shuffleGifZIndex, 1000));
+        }
+
+        function showReplayScreen() {
+            clearAllIntervals();
+            finalGifs.forEach(gif => gif.style.display = 'none');
+            phoneScreen.style.backgroundColor = '#000';
+            replayButton.style.display = 'flex';
+            credits.style.display = 'block';
+        }
+
+        function spotlightRandomGif() {
+            document.querySelector('.final-gif.spotlight')?.classList.remove('spotlight');
+            finalGifs[Math.floor(Math.random() * finalGifs.length)].classList.add('spotlight');
+        }
+
+        function shuffleGifZIndex() {
+            finalGifs.forEach(gif => {
+                if (!gif.classList.contains('spotlight')) {
+                    gif.style.zIndex = Math.floor(Math.random() * 10) + 5;
+                }
+            });
+        }
+        
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            const colors = ['#FF69B4', '#FFD700', '#ADFF2F', '#1E90FF', '#BA55D3', '#FF4500'];
+            confetti.style.left = Math.random() * phoneScreen.offsetWidth + 'px';
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDuration = (Math.random() * 3 + 5) + 's';
+            confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+            confetti.style.transform = `scale(${Math.random() * 0.5 + 0.5})`;
+            phoneScreen.appendChild(confetti);
+            setTimeout(() => { confetti.remove(); }, 8000);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = Math.random() * phoneScreen.offsetWidth + 'px';
+            heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+            phoneScreen.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 10000);
+        }
+
+        function moveGifs() {
+            finalGifs.forEach(gif => {
+                const maxX = phoneScreen.offsetWidth - gif.offsetWidth;
+                const maxY = phoneScreen.offsetHeight - gif.offsetHeight;
+                gif.style.left = `${Math.random() * maxX}px`;
+                gif.style.top = `${Math.random() * maxY}px`;
+            });
+        }
+        
+        yesButtons.forEach(button => button.addEventListener('click', startTheShow));
+        replayButton.addEventListener('click', startTheShow);
+        
+        function moveNoButton() {
+            if (!noButtonHasMoved) {
+                const rect = noButton.getBoundingClientRect();
+                const containerRect = phoneScreen.getBoundingClientRect();
+                noButtonWrapper.style.height = `${rect.height}px`;
+                phoneScreen.appendChild(noButton);
+                noButton.style.position = 'absolute';
+                noButton.style.left = `${rect.left - containerRect.left}px`;
+                noButton.style.top = `${rect.top - containerRect.top}px`;
+                noButtonHasMoved = true;
+            }
+            const maxX = phoneScreen.offsetWidth - noButton.offsetWidth;
+            const maxY = phoneScreen.offsetHeight - noButton.offsetHeight;
+            noButton.style.left = `${Math.random() * maxX}px`;
+            noButton.style.top = `${Math.random() * maxY}px`;
+        }
+        
+        if (window.matchMedia("(hover: hover)").matches) {
+            noButton.addEventListener('mouseover', moveNoButton);
+        } else {
+            noButton.addEventListener('click', moveNoButton);
+        }
+    </script>
+</body>
+</html>
